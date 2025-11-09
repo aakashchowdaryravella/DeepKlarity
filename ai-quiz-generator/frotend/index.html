@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>DeepKlarity - GenAI Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; max-width: 800px; }
+    textarea { width:100%; height:120px; }
+    pre { white-space: pre-wrap; background:#f4f4f4; padding:10px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <h2>DeepKlarity — Generate text (demo)</h2>
+  <p>Enter prompt and click Generate.</p>
+  <textarea id="prompt">Write a short summary describing an IoT botnet detection pipeline in simple words.</textarea>
+  <div style="margin-top:8px;">
+    <button id="gen">Generate</button>
+  </div>
+  <h3>Output</h3>
+  <pre id="output">—</pre>
+
+  <script>
+    document.getElementById("gen").addEventListener("click", async () => {
+      const prompt = document.getElementById("prompt").value;
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({prompt})
+      });
+      const data = await res.json();
+      if (data.ok) {
+        document.getElementById("output").textContent = `Model: ${data.model_used}\n\n` + data.output;
+      } else {
+        document.getElementById("output").textContent = "Error: " + (data.error || JSON.stringify(data));
+      }
+    });
+  </script>
+</body>
+</html>
